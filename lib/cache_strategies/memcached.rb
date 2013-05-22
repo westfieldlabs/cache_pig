@@ -1,0 +1,2 @@
+module CacheStrategies::Memcached
+end
