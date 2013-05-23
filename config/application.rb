@@ -43,5 +43,8 @@ module Cachepig
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
 
+    # Autoload lib/ folder including all subdirectories
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
   end
 end
