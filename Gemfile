@@ -7,6 +7,7 @@ gem 'fog'
 
 group :test, :development do
   gem 'pry'
+  gem 'pry-rails'
   gem 'guard'
   gem 'rspec'
   gem 'rspec-rails'
