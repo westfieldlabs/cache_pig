@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe CacheStrategies::CloudFront do
   describe '#clear' do
-    let(:cdn) { double('cdn', :post_invalidation => response) }
+    let(:cdn) { double('cdn', :post_invalidation => response, :get_invalidation => response) }
     let(:cache) { Cache.new(:cache_type => 'CloudFront') }
-    let(:response) { double('response', :body => {'Id'=>'0'}) }
+    let(:response) { double('response', :body => {'Id'=>'0', 'Status' => 'Completed'}) }
 
     before do
       Fog::CDN.stub(:new => cdn)
@@ -33,8 +33,13 @@ describe CacheStrategies::CloudFront do
       end
     end
 
-    it "should return response body's id" do
-      expect(cache.clear).to eq('0')
+    # TODO: change this behaviour
+    it "should timeout if not completing" do
+      # TODO - when config is properly done, this shouldn't be a problem.
+      orig_conf = cache.config
+      cache.stub(:config).and_return(orig_conf.merge(:timeout_seconds => 1))
+      response.stub(:body => {'Id'=>'0', 'Status' => 'InProgress'})
+      expect { cache.clear }.to raise_error(Fog::Errors::TimeoutError)
     end
   end
 end
