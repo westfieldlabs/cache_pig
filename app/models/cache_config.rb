@@ -15,16 +15,8 @@ class CacheConfig
     all.select { |k,v| k == name }[name]
   end
 
-  def self.find_by_strategy(strategy)
-    all.detect { |k,v| v[:strategy] == strategy }[1]
-  end
-
-  def self.find_by_proxy_address(address)
-    all.detect { |k,v| v[:proxy_address] == proxy_address }[1]
-  end
-
-  def self.by_urls(urls)
-    all.select { |k,v| (v[:urls] & urls).any? }
-  end
+  # We could add a find_by_group method in here, which would look for any caches
+  # in the config with the specified group, so that an array of caches could be 
+  # purged with one call to the API.
 
 end

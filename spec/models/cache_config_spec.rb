@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Config Loader" do
+describe CacheConfig do
 
   context "with no caches.yml file provided" do
 
@@ -34,6 +34,18 @@ describe "Config Loader" do
     after do
       CacheConfig.load_caches_info
     end
+
+  end
+
+  it "returns a cache_config hash" do
+
+    CacheConfig.find_by_name("cloud_front_example_server_one").should == {
+      "strategy"=>"CloudFront", 
+      "access_key"=>"123", 
+      "secret_key"=>"SECRET", 
+      "distribution_id"=>"DIST_ID", 
+      "target_objects"=>["test.html"]
+    }
 
   end
 
