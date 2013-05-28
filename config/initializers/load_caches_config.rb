@@ -1,0 +1,1 @@
+CacheConfig.load_caches_info

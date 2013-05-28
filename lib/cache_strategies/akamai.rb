@@ -1,2 +1,0 @@
-module CacheStrategies::Akamai
-end

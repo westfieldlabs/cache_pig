@@ -1,0 +1,23 @@
+akamai_example_server_one:
+  strategy: akamai
+  purge_urls:
+    - http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/
+    - http://cdnsa1.atwestfield.com/fountaingate/news-and-events/food-and-lifestyle/recipes/
+
+varnish_example_server_one:
+  strategy: Varnish
+  proxies:
+    - ausyd-rp01.dbg.westfield.com:80
+    - ausyd-rp02.dbg.westfield.com:80
+  urls:
+    - http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/
+    - http://cdnsa1.atwestfield.com/fountaingate/news-and-events/food-and-lifestyle/recipes/
+
+cloud_front_example_server_one:
+  strategy: CloudFront
+  access_key: '123'
+  secret_key: 'SECRET'
+  distribution_id: 'DIST_ID'
+  timeout_seconds: 1200
+  target_objects:
+    - test.html
