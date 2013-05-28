@@ -1,0 +1,5 @@
+:queues:
+  - [default]
+  - [CloudFront]
+:limits:
+  CloudFront: 3

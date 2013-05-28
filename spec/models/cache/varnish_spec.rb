@@ -21,11 +21,11 @@ describe Cache::Varnish do
       cache.purge
     end
 
-    describe '#basename' do
-      it 'should be Varnish' do
-        expect(Cache::Varnish.new.basename).to eq('Varnish')
-      end
-   end
+  end
 
+  describe '#basename' do
+    it 'should be Varnish' do
+      expect(Cache::Varnish.new.basename).to eq('Varnish')
+    end
   end
 end

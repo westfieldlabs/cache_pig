@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'spec_helper'
-
 describe Cache do
   describe '#config' do
     it 'should be options' do
