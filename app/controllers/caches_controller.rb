@@ -1,7 +1,7 @@
 class CachesController < ApplicationController
 
   def create
-    @cache = Cache.new(params[:cache])
+    @cache = Cache.instance_for(params[:cache])
     #CacheClearer.perform_async(@cache.as_hash)
     # TODO: change this. this was done so that we can specify which queue we want to use.
     # when these classes are DRYed, the above statement should just work

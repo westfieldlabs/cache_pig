@@ -39,15 +39,24 @@ class Cache
     raise NotImplementedError, 'You have to subclass Cache.'
   end
 
-  def self.instance_for(options)
+  def self.instance_for(params)
     # TODO: should we check whitelist and use constantize?
-    case options.delete(:cache_type)
+    case self.cache_type_for(params)
     when 'CloudFront'
-      Cache::CloudFront.new(options)
+      Cache::CloudFront.new(params)
     when 'Varnish'
-      Cache::Varnish.new(options)
+      Cache::Varnish.new(params)
     else
       # raise?
     end
+  end
+
+  def self.cache_type_for(params)
+    class_name = params.delete(:cache_type)
+    if class_name.blank?
+      cache_conf = CacheConfig.find_by_name(params[:name])
+      class_name = cache_conf['strategy'] if cache_conf
+    end
+    class_name
   end
 end

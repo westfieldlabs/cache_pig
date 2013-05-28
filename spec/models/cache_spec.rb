@@ -69,16 +69,42 @@ describe Cache do
     end
   end
 
-  describe '.instance_for(options)' do
-    context 'when varnish specified' do
+  describe '.instance_for(params)' do
+    context 'when varnish server name specified' do
+      it 'should return varnish cache instance' do
+        expect(Cache.instance_for(:name => 'varnish_example_server_one')).to be_instance_of(Cache::Varnish)
+      end
+    end
+
+    context 'when varnish specified by cache type' do
       it 'should create varnish cache instance' do
         expect(Cache.instance_for(:cache_type => 'Varnish')).to be_instance_of(Cache::Varnish)
       end
     end
 
-    context 'when cloudfront specified' do
+    context 'when cloudfront specified by cache type' do
       it 'should create cloudfront cache instance' do
         expect(Cache.instance_for(:cache_type => 'CloudFront')).to be_instance_of(Cache::CloudFront)
+      end
+    end
+  end
+
+  describe '.cache_type_for(params)' do
+    context 'when cache type specified' do
+      it 'should be specifed cache type' do
+        expect(Cache.cache_type_for(:cache_type => 'CloudFront')).to eq('CloudFront')
+      end
+    end
+
+    context 'when varnish server name given' do
+      it 'should be Varnish' do
+        expect(Cache.cache_type_for(:name => 'varnish_example_server_one')).to eq('Varnish')
+      end
+    end
+
+    context 'when cloudfront server name given' do
+      it 'should be CloudFront' do
+        expect(Cache.cache_type_for(:name => 'cloud_front_example_server_one')).to eq('CloudFront')
       end
     end
   end

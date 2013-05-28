@@ -31,6 +31,6 @@ class Cache::CloudFront < Cache
   end
 
   def as_hash
-    { :cache_type => 'CloudFront' }
+    { :cache_type => 'CloudFront' }.merge(options)
   end
 end
