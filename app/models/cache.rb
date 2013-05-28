@@ -2,7 +2,7 @@ class Cache
   attr_accessor :options
 
   def initialize(options = {})
-    @options = options
+    @options = options.symbolize_keys
   end
 
   def config
@@ -10,10 +10,8 @@ class Cache
   end
 
   def yml_config
-    if options[:name]
+    if options[:name] && CacheConfig.all.keys.include?(options[:name])
       CacheConfig.find_by_name(options[:name])
-    elsif options[:address]
-      CacheConfig.find_by_address(options[:address])
     else
       {}
     end
@@ -24,7 +22,7 @@ class Cache
   end
 
   def strategy
-    self.class
+    self.class.name.gsub("Cache::","")
   end
 
   def objects
