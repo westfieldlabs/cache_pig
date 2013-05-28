@@ -2,19 +2,15 @@ require 'spec_helper'
 
 describe "Config Loader" do
 
-  before do
-
-  end
-
   context "with no caches.yml file provided" do
 
     before do
-      File.stub(:exists?).and_return(false)
-      ConfigLoader.load_caches_info
+      File.stub(:exists? => nil)
+      CacheConfig.load_caches_info
     end
 
-    it "sets CACHE_CONFIG to an empty hash" do
-      Cachepig::Application.config.caches.should ==  {}
+    it "sets CacheConfig.all to an empty hash" do
+      CacheConfig.all.should ==  {}
     end
 
   end
@@ -22,21 +18,21 @@ describe "Config Loader" do
   context "with a caches.yml file provided" do
 
     before do
-      ConfigLoader.load_caches_info
+      CacheConfig.load_caches_info
     end
 
     it "loads the provided caches.yml config file" do
-      Cachepig::Application.config.caches.should_not be_empty
-    end
-
-    it "provides access to the hash via a config method on the Cache class" do
-      Cache.config.should_not be_empty
+      CacheConfig.all.should_not be_empty
     end
 
     it "allows reloading of config" do
-      Cache.config.keys.should_not include("new_cached_content_server_name")
-      ConfigLoader.load_caches_info('spec/support/example_cache_config.yml')
-      Cache.config.keys.should include("new_cached_content_server_name")
+      CacheConfig.all.keys.should_not include("new_cached_content_server_name")
+      CacheConfig.load_caches_info('spec/support/example_cache_config.yml')
+      CacheConfig.all.keys.should include("new_cached_content_server_name")
+    end
+
+    after do
+      CacheConfig.load_caches_info
     end
 
   end

@@ -1,18 +1,34 @@
 class Cache
-  include CacheStrategies
-  attr_accessor :cache_type
-
-  def self.config
-    Cachepig::Application.config.caches
-  end
+  attr_accessor :options
 
   def initialize(options = {})
-    @cache_type = options[:cache_type]
+    @options = options
   end
 
-  def purge
-    send("purge_#{cache_type}_cache")
-    puts "\nFINISHED PURGING #{cache_type} CACHE."
+  def config
+    check_default_config.merge(yml_config).merge(options)
+  end
+
+  def yml_config
+    if options[:name]
+      CacheConfig.find_by_name(options[:name])
+    elsif options[:address]
+      CacheConfig.find_by_address(options[:address])
+    else
+      {}
+    end
+  end
+
+  def check_default_config
+    respond_to?(:default_config) ? default_config : {}
+  end
+
+  def strategy
+    self.class
+  end
+
+  def objects
+    config[:objects]
   end
 
 end

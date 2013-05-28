@@ -1,2 +1,0 @@
-module CacheStrategies::Varnish
-end
