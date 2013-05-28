@@ -69,6 +69,12 @@ describe Cache do
     end
   end
 
+  describe '#basename' do
+    it 'should be Cache' do
+      expect(Cache.new.basename).to eq('Cache')
+    end
+  end
+
   describe '.instance_for(params)' do
     context 'when varnish server name specified' do
       it 'should return varnish cache instance' do

@@ -20,7 +20,7 @@ class Cache::CloudFront < Cache
     begin 
       response = cdn.post_invalidation(config["distribution_id"], target_objects)
       id = response.body['Id']
-      Fog.wait_for(config[:timeout_seconds]) { cdn.get_invalidation(config[:distribution_id], id).body['Status'] == 'Completed' }
+      Fog.wait_for(config[:timeout_seconds]) { cdn.get_invalidation(config['distribution_id'], id).body['Status'] == 'Completed' }
     rescue Excon::Errors::BadRequest
       # if there are 3 'In Progress' already, the call returns code 400, and results in Excon::Errors::BadRequest
       # flag this as retry later?

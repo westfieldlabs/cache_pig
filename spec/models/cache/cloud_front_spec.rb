@@ -42,4 +42,10 @@ describe Cache::CloudFront do
       expect { cache.purge }.to raise_error(Fog::Errors::TimeoutError)
     end
   end
+
+  describe '#basename' do
+    it 'should be CloudFront' do
+      expect(Cache::CloudFront.new.basename).to eq('CloudFront')
+    end
+  end
 end

@@ -39,6 +39,10 @@ class Cache
     raise NotImplementedError, 'You have to subclass Cache.'
   end
 
+  def basename
+    self.class.to_s.sub(/^.*::/, '')
+  end
+
   def self.instance_for(params)
     # TODO: should we check whitelist and use constantize?
     case self.cache_type_for(params)

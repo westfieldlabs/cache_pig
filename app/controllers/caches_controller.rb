@@ -6,7 +6,7 @@ class CachesController < ApplicationController
     # TODO: change this. this was done so that we can specify which queue we want to use.
     # when these classes are DRYed, the above statement should just work
     # or, could we perhaps use this: sidekiq_options :queue => :CloudFront
-    CacheClearer.client_push('class' => CacheClearer, 'queue' => @cache.cache_type, 'args' => [@cache.as_hash])
+    CacheClearer.client_push('class' => CacheClearer, 'queue' => @cache.basename, 'args' => [@cache.as_hash])
     render json: @cache
   end
 
