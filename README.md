@@ -47,6 +47,13 @@ Walkthrough / Smoke Test
 
 Describe a manual smoke test process to ensure that the env is running as it should be.
 
+Note: it is handy to use s3cmd if you're making invalidation requests to cloudfront:
+
+```
+curl -d 'cache[cache_type]=CloudFront' http://localhost:3000/caches
+s3cmd cfinvalinfo cf://DIST_ID | head -n 30
+```
+
 
 Testing
 ----------------------------------------------
