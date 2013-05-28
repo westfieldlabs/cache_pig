@@ -4,9 +4,11 @@ gem 'rails', '3.2.13'
 gem 'rails-api'
 gem 'sidekiq'
 gem 'fog'
+gem 'sidekiq-limit_fetch'
 
 group :test, :development do
   gem 'pry'
+  gem 'pry-rails'
   gem 'guard'
   gem 'rspec'
   gem 'rspec-rails'

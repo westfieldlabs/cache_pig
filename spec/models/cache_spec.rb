@@ -1,31 +1,119 @@
 require 'spec_helper'
 
+require 'spec_helper'
+
 describe Cache do
-
-  let(:cache) { Cache::CloudFront.new(:name => 'cloud_front_example_server_one') }
-
-  it "returns the strategy" do
-    cache.strategy.should == "CloudFront"
+  describe '#config' do
+    it 'should be options' do
+      expect(Cache.new(:foo => :bar).config).to eq({:foo => :bar})
+    end
   end
 
-  it "returns the yml config hash from the caches name" do
-    cache.yml_config.should == {
-      "strategy"=>"CloudFront", 
-      "access_key"=>"123", 
-      "secret_key"=>"SECRET", 
-      "distribution_id"=>"DIST_ID", 
-      "target_objects"=>["test.html"]
-    }
+  describe '#yml_config' do
+    before do
+      CacheConfig.stub(:find_by_name => 'found by name')
+      CacheConfig.stub(:find_by_address => 'found by address')
+    end
+
+    context 'when name given' do
+      it 'should find by name' do
+        expect(Cache.new(:name => 'foo').yml_config).to eq('found by name')
+      end
+    end
+
+    context 'when address given' do
+      it 'should find by address' do
+        expect(Cache.new(:address => 'bar').yml_config).to eq('found by address')
+      end
+    end
+
+    context 'when both given' do
+      it 'should find by name' do
+        expect(Cache.new(:name => 'foo', :address => 'bar').yml_config).to eq('found by name')
+      end
+    end
+
+    context 'when neither given' do
+      it 'should be empty' do
+        expect(Cache.new.yml_config).to eq({})
+      end
+    end
   end
 
-  it "returns an empty yml config hash if the name is nil" do
-    cache.options[:name] = nil
-    cache.yml_config.should == {}
+  describe '#check_default_config' do
+    it 'should be empty' do
+      expect(Cache.new.check_default_config).to eq({})
+    end
   end
 
-  it "returns an empty yml config hash if the name is not a key in the config file" do
-    cache.options[:name] = "something"
-    cache.yml_config.should == {}
+  describe '#strategy' do
+    it 'should be its class' do
+      expect(Cache.new.strategy).to eq(Cache)
+    end
   end
 
+  describe '#objects' do
+    it "should be config's objects" do
+      cache = Cache.new(:objects => ['object'])
+      expect(cache.objects).to eq(['object'])
+    end
+  end
+
+  describe '#purge' do
+    it 'should raise not implemented' do
+      expect { Cache.new.purge }.to raise_error( NotImplementedError )
+    end
+  end
+
+  describe '#as_hash' do
+    it 'should raise not implemented' do
+      expect { Cache.new.as_hash }.to raise_error( NotImplementedError )
+    end
+  end
+
+  describe '#basename' do
+    it 'should be Cache' do
+      expect(Cache.new.basename).to eq('Cache')
+    end
+  end
+
+  describe '.instance_for(params)' do
+    context 'when varnish server name specified' do
+      it 'should return varnish cache instance' do
+        expect(Cache.instance_for(:name => 'varnish_example_server_one')).to be_instance_of(Cache::Varnish)
+      end
+    end
+
+    context 'when varnish specified by cache type' do
+      it 'should create varnish cache instance' do
+        expect(Cache.instance_for(:cache_type => 'Varnish')).to be_instance_of(Cache::Varnish)
+      end
+    end
+
+    context 'when cloudfront specified by cache type' do
+      it 'should create cloudfront cache instance' do
+        expect(Cache.instance_for(:cache_type => 'CloudFront')).to be_instance_of(Cache::CloudFront)
+      end
+    end
+  end
+
+  describe '.cache_type_for(params)' do
+    context 'when cache type specified' do
+      it 'should be specifed cache type' do
+        expect(Cache.cache_type_for(:cache_type => 'CloudFront')).to eq('CloudFront')
+      end
+    end
+
+    context 'when varnish server name given' do
+      it 'should be Varnish' do
+        expect(Cache.cache_type_for(:name => 'varnish_example_server_one')).to eq('Varnish')
+      end
+    end
+
+    context 'when cloudfront server name given' do
+      it 'should be CloudFront' do
+        expect(Cache.cache_type_for(:name => 'cloud_front_example_server_one')).to eq('CloudFront')
+      end
+    end
+  end
 end

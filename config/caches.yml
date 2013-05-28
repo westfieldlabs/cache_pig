@@ -18,5 +18,6 @@ cloud_front_example_server_one:
   access_key: '123'
   secret_key: 'SECRET'
   distribution_id: 'DIST_ID'
+  timeout_seconds: 1200
   target_objects:
     - test.html

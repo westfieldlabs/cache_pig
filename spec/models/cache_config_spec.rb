@@ -44,7 +44,8 @@ describe CacheConfig do
       "access_key"=>"123", 
       "secret_key"=>"SECRET", 
       "distribution_id"=>"DIST_ID", 
-      "target_objects"=>["test.html"]
+      "target_objects"=>["test.html"],
+      "timeout_seconds"=>1200
     }
 
   end
