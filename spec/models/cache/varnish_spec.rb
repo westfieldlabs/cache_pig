@@ -9,7 +9,6 @@ describe Cache::Varnish do
     end
 
     it "executes a curl command to purge the cache" do
-      expected_curl_command = ""
       cache.should_receive(:system).at_least(:once) do |arg|
         arg.should match /curl -m 2 -H 'Cache-control: no-cache' -x \S* -I \S* -s/
       end

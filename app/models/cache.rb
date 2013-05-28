@@ -24,7 +24,7 @@ class Cache
   end
 
   def strategy
-    self.class
+    self.class # .name.gsub("Cache::","")
   end
 
   def objects
