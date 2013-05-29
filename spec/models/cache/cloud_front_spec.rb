@@ -33,13 +33,10 @@ describe Cache::CloudFront do
       end
     end
 
-    # TODO: change this behaviour
     it "should timeout if not completing" do
-      # TODO - when config is properly done, this shouldn't be a problem.
-      orig_conf = cache.config
-      cache.stub(:config).and_return(orig_conf.merge(:timeout_seconds => 1))
+      cache_timeout = Cache::CloudFront.new(cache.config.merge(:timeout_seconds => 1))
       response.stub(:body => {'Id'=>'0', 'Status' => 'InProgress'})
-      expect { cache.purge }.to raise_error(Fog::Errors::TimeoutError)
+      expect { cache_timeout.purge }.to raise_error(Fog::Errors::TimeoutError)
     end
   end
 
