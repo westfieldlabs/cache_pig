@@ -24,23 +24,29 @@ class Cache::CloudFront < Cache
     end
   end
 
-  def too_many?(objects)
-    objects.size > config[:max_per_req]
-  end
-
   def purge(target_objects = objects)
     if too_many?(target_objects)
       split_and_purge(target_objects)
     else
-      response = cdn.post_invalidation(config["distribution_id"], target_objects)
-      id = response.body['Id']
-      Fog.wait_for(config[:timeout_seconds]) { cdn.get_invalidation(config['distribution_id'], id).body['Status'] == 'Completed' }
+      invalidate_and_wait(config["distribution_id"], target_objects)
     end
-
-    # TODO: Should we handle Excon::Errors::BadRequest or Fog::Errors::TimeoutError or let sidekiq deal with them?
   end
 
   def as_hash
     { :cache_type => 'CloudFront' }.merge(options)
   end
+
+private
+  def too_many?(objects)
+    objects.size > config[:max_per_req]
+  end
+
+  def invalidate_and_wait(distribution_id, objects)
+    response = cdn.post_invalidation(distribution_id, objects)
+    id = response.body['Id']
+    Fog.wait_for(config[:timeout_seconds]) { cdn.get_invalidation(config['distribution_id'], id).body['Status'] == 'Completed' }
+
+    # TODO: Should we handle Excon::Errors::BadRequest or Fog::Errors::TimeoutError or let sidekiq deal with them?
+  end
+
 end
