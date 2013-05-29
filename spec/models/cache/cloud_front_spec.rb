@@ -38,6 +38,24 @@ describe Cache::CloudFront do
       response.stub(:body => {'Id'=>'0', 'Status' => 'InProgress'})
       expect { cache_timeout.purge }.to raise_error(Fog::Errors::TimeoutError)
     end
+
+    context 'when 2001 objects given' do
+      let(:array_2001) { (1..2001).map { |i| "#{i}.txt" } }
+
+      it 'should create new cache purge oject' do
+        expect {
+          cache.purge(array_2001)
+        }.to change(CacheClearer.jobs, :size).by(3)
+      end
+
+      it 'should make 1000, 1000, and 1 object' do
+        cache.purge(array_2001)
+        jobs = CacheClearer.jobs[-3..-1]
+        expect(jobs[0]['args'][0]['objects'].size).to eq(1000)
+        expect(jobs[1]['args'][0]['objects'].size).to eq(1000)
+        expect(jobs[2]['args'][0]['objects'].size).to eq(1)
+      end
+    end
   end
 
   describe '#basename' do

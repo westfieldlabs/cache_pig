@@ -48,6 +48,12 @@ describe Cache do
     it 'should be its class' do
       expect(Cache.new.strategy).to eq(Cache)
     end
+
+    context 'when called for subclass' do
+      it 'should be full class name' do
+        expect(Cache::CloudFront.new.strategy).to eq(Cache::CloudFront)
+      end
+    end
   end
 
   describe '#objects' do
