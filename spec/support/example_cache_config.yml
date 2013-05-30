@@ -1,5 +1,5 @@
 new_cached_content_server_name:
   strategy: akamai
-  purge_urls:
+  urls:
     - http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/
     - http://cdnsa1.atwestfield.com/fountaingate/news-and-events/food-and-lifestyle/recipes/

@@ -22,13 +22,13 @@ describe Cache::CloudFront do
     end
 
     it 'should post invalidation with default objects' do
-      cdn.should_receive(:post_invalidation).with('DIST_ID', ['/default.html'])
+      cdn.should_receive(:post_invalidation).with('DIST_ID_1', ['/default.html'])
       cache.purge
     end
 
     context 'when objects specified' do
       it 'should post invalidation with specified objects' do
-        cdn.should_receive(:post_invalidation).with('DIST_ID', ['obj'])
+        cdn.should_receive(:post_invalidation).with('DIST_ID_1', ['obj'])
         cache.purge(['obj'])
       end
     end

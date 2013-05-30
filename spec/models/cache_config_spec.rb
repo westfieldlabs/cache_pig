@@ -43,9 +43,9 @@ describe CacheConfig do
       "strategy"=>"CloudFront", 
       "access_key"=>"123", 
       "secret_key"=>"SECRET", 
-      "distribution_id"=>"DIST_ID", 
-      "target_objects"=>["test.html"],
-      "timeout_seconds"=>1200
+      "distribution_id"=>"DIST_ID_1",
+      "timeout_seconds"=>1200,
+      "urls"=>["/au/images/clusters/2013/banner/image.jpeg"]
     }
 
   end
