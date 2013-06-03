@@ -29,7 +29,7 @@ cloud_front_example_server_one:
   distribution_id: 'DIST_ID_1'
   timeout_seconds: 1200
   urls:
-    - /au/images/clusters/2013/banner/image.jpeg
+    - /au/images/
 
 cloud_front_example_server_two:
   strategy: CloudFront
@@ -38,4 +38,4 @@ cloud_front_example_server_two:
   distribution_id: 'DIST_ID_2'
   timeout_seconds: 1200
   urls:
-    - /au/images/clusters/2013/banner/something.jpg
+    - /au/styles/

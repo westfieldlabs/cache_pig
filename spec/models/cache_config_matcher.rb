@@ -45,4 +45,23 @@ describe CacheConfigMatcher do
       end
     end
   end
+
+  describe "#url_matches_urls_in_config_hash" do
+
+    let(:config_hash) { :strategy => "Akamai", :urls => ["http://cdnsa1.atwestfield.com/au/images/banner.jpg"],
+      "http://cdnsa1.atwestfield.com/au/styles/style.css",
+      "/ /"
+
+
+    it "returns true if the url is in the config hash" do
+      config_hash = {:strategy => "Akamai", :urls => ["http://cdnsa1.atwestfield.com/au/images/banner.jpg"]}
+    end
+
+    it "returns false if th url is not in the config hash"
+
+    it "returns true if the url matches a regex in the config hash"
+
+    it "returns false if the url doesn't match a regex in the config hash"
+  end
+
 end

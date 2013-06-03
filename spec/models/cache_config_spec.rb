@@ -45,7 +45,7 @@ describe CacheConfig do
       "secret_key"=>"SECRET", 
       "distribution_id"=>"DIST_ID_1",
       "timeout_seconds"=>1200,
-      "urls"=>["/au/images/clusters/2013/banner/image.jpeg"]
+      "urls"=>["/au/images/"]
     }
 
   end

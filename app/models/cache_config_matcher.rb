@@ -27,7 +27,7 @@ class CacheConfigMatcher
   def self.url_matches_urls_in_config_hash?(url,config_hash)
     Array(config_hash["urls"]).detect do |url_from_config_hash|
       if url_from_config_hash[0] == "/" && url_from_config_hash[url_from_config_hash.length-1] == "/"
-        Regexp.new(url_from_config_hash).match(url)
+        Regexp.new(url_from_config_hash.as_regexp[0]).match(url)
       else
         url_from_config_hash == url
       end
