@@ -7,11 +7,13 @@ gem 'fog'
 gem 'sidekiq-limit_fetch'
 gem 'to_regexp'
 gem 'rest-client'
+gem 'akamai_api'
 
 group :test, :development do
   gem 'pry'
   gem 'pry-rails'
   gem 'guard'
+  gem 'guard-rspec'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'debugger'

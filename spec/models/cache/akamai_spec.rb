@@ -1,0 +1,83 @@
+require 'spec_helper'
+
+describe Cache::Akamai do
+  let(:akamai) { Cache::Akamai.new(:name => 'akamai_test') }
+  let(:response) { double('response', :code => 100) }
+
+  before do
+    AkamaiApi::Ccu.stub(:purge => response)
+    CacheConfig.stub(:find_by_name).and_return({})
+  end
+
+  describe '#purge' do
+    it 'should create connection with provided config' do
+      CacheConfig.stub(:find_by_name).and_return({:username => 'username', :password => 'password'})
+      AkamaiApi.config.should_receive(:merge!).with(
+        :auth  => [ 'username', 'password' ]
+      )
+      akamai.purge
+    end
+
+    it 'should call Connection#purge with objects' do
+      AkamaiApi::Ccu.should_receive(:purge).with( :invalidate, :arl, ['http://example.com/foo', 'http://example.com/bar']).and_return(response)
+      akamai.purge(['http://example.com/foo', 'http://example.com/bar'])
+    end
+
+    it 'should timeout if not completing'
+
+    context 'when more than 100 objects given' do
+      let(:array_201) { (1..201).map { |i| "#{i}.txt" } }
+
+      it 'should add new objects in the queue' do
+        expect {
+          akamai.purge(array_201)
+        }.to change(CacheClearer.jobs, :size).by(3)
+      end
+
+      it 'should split in 100, 100, 1' do
+        akamai.purge(array_201)
+        jobs = CacheClearer.jobs[-3..-1]
+        expect(jobs[0]['args'][0]['objects'].size).to eq(100)
+        expect(jobs[1]['args'][0]['objects'].size).to eq(100)
+        expect(jobs[2]['args'][0]['objects'].size).to eq(1)
+      end
+    end
+
+    context 'when Error 332 is returned' do
+      before do
+        AkamaiApi::Ccu.stub(:purge).and_return(response)
+        response.stub(:code).and_return(332)
+      end
+
+      it 'should pause queue' do
+        akamai.purge([:foo])
+        expect(Sidekiq::Queue['Akamai']).to be_paused
+      end
+
+      it 'should add itself to the default queue' do
+        expect {
+          akamai.purge([:foo])
+        }.to change{CacheClearer.jobs.select{|j| j["queue"] == "default"}.size}.by(1)
+      end
+
+    end
+
+    context 'when it succeeds' do
+      before do
+        Sidekiq::Queue['Akamai'].pause
+      end
+
+      it 'should unpause the queue' do
+        expect(Sidekiq::Queue['Akamai']).to be_paused
+        akamai.purge([:foo])
+        expect(Sidekiq::Queue['Akamai']).to_not be_paused
+      end
+    end
+  end
+
+  describe '#basename' do
+    it 'should be "Akamai"' do
+      expect(Cache::Akamai.new.basename).to eq('Akamai')
+    end
+  end
+end
