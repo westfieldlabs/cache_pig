@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CacheClearer do
-  context '#perform' do
+  describe '#perform' do
     before do
       @cache = Cache::CloudFront.new
       @cache.stub(:purge)
@@ -19,5 +19,12 @@ describe CacheClearer do
       }.to change(CacheClearer.jobs, :size).by(1)
     end
 
+  end
+
+  describe '#push_to_queue' do
+    it 'should push to a specified queue' do
+      CacheClearer.push_to_queue('CloudFront', [{}])
+      expect(CacheClearer.jobs.last["queue"]).to eq("CloudFront")
+    end
   end
 end
