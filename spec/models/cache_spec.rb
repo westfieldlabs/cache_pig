@@ -81,22 +81,113 @@ describe Cache do
     end
   end
 
-  describe '.instance_for(params)' do
-    context 'when varnish server name specified' do
-      it 'should return varnish cache instance' do
-        expect(Cache.instance_for(:name => 'varnish_example_server_one')).to be_instance_of(Cache::Varnish)
+  describe '.instances_for(urls_grouped_by_cache_config_name)' do
+
+    context 'with one url param' do
+
+      context 'with a varnish url given' do
+
+        let(:caches) { Cache.instances_for("varnish_example_server_one" => 
+          'http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/') }
+        
+        it "returns an array with one Cache::Varnish object in it" do
+          caches.size.should == 1
+          caches[0].should be_instance_of(Cache::Varnish)
+        end
+
       end
+
+      context 'with a CloudFront url given' do
+
+        let(:caches) { Cache.instances_for("cloud_front_example_server_one" => 
+          '/au/images/clusters/2013/banner/image.jpeg') }
+
+        it "returns an array with one Cache::CloudFront object in it" do
+          caches.size.should == 1
+          caches[0].should be_instance_of(Cache::CloudFront)
+        end
+
+      end
+
+      context 'with a akamai url given' do
+
+        let(:caches) { Cache.instances_for("akamai_example_server_one" => 
+          'http://cdnsa1.atwestfield.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg') }
+
+        it "returns an array with one Cache::CloudFront object in it" do
+          caches.size.should == 1
+          caches[0].should be_instance_of(Cache::Akamai)
+        end
+
+      end
+
     end
 
-    context 'when varnish specified by cache type' do
-      it 'should create varnish cache instance' do
-        expect(Cache.instance_for(:cache_type => 'Varnish')).to be_instance_of(Cache::Varnish)
+    context "multiple urls using the same strategy from the same config hash" do
+
+      let(:caches) { Cache.instances_for("akamai_example_server_one" => [
+        'http://cdnsa1.atwestfield.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg',
+        'http://www.westfield.com.au/au/images/clusters/2013/banner/pete-evans-may-banner.jpg'
+        ]) }
+
+      it "returns an array with one Cache::Akamai object in it, with 2 urls" do
+        caches.size.should == 1
+        caches[0].should be_instance_of(Cache::Akamai)
+        caches[0].urls.should == [
+          'http://cdnsa1.atwestfield.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg',
+          'http://www.westfield.com.au/au/images/clusters/2013/banner/pete-evans-may-banner.jpg'
+        ]
       end
+
     end
 
-    context 'when cloudfront specified by cache type' do
-      it 'should create cloudfront cache instance' do
-        expect(Cache.instance_for(:cache_type => 'CloudFront')).to be_instance_of(Cache::CloudFront)
+    context "multiple urls using the same strategy with different config" do
+      # eg: at the top level of caches.yml, there might be > 1 config hashes for Akamai,
+      # so we need to create different Cache objects for each.
+      let(:caches) { Cache.instances_for("cloud_front_example_server_one" => ['/au/images/clusters/2013/banner/image.jpeg'],
+        "cloud_front_example_server_two" => ['/au/images/clusters/2013/banner/something.jpg']) }
+
+      it "returns an array of two Cache::CloudFront instances with different distribution_ids" do
+        caches.size.should == 2
+        caches.each_with_index do |c,index|
+          c.should be_instance_of(Cache::CloudFront)
+          c.options["distribution_id"].should == "DIST_ID_#{index+1}"
+        end
+      end
+
+    end
+
+    context "multiple urls and multiple strategies" do
+      # eg: at the top level of caches.yml, there might be > 1 config hashes for Akamai,
+      # so we need to create different Cache objects for each.
+      let(:caches) { Cache.instances_for("cloud_front_example_server_one" => ['/au/images/clusters/2013/banner/image.jpeg'],
+        "cloud_front_example_server_two" => ['/au/images/clusters/2013/banner/something.jpg'],
+        "varnish_example_server_one" => ['http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/',
+          "http://cdnsa1.atwestfield.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"]) }
+
+      it "returns an array of three Cache::CloudFront instances and one Cache::Varnish instance" do
+        caches.size.should == 3
+        caches[0].should be_instance_of(Cache::CloudFront)
+        caches[0].urls.should == ['/au/images/clusters/2013/banner/image.jpeg']
+        caches[1].should be_instance_of(Cache::CloudFront)
+        caches[1].urls.should == ['/au/images/clusters/2013/banner/something.jpg']
+        caches[2].should be_instance_of(Cache::Varnish)
+        caches[2].urls.should == ['http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/',
+          "http://cdnsa1.atwestfield.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
+      end
+
+    end
+
+    context "a single url that pertains to multiple strategies" do
+
+      let(:caches) { Cache.instances_for("varnish_example_server_one" => ["http://www.westfield.com.au/au/images/clusters/2013/banner/lbobo-may-2914.jpg"], 
+        "varnish_example_server_two" => ["http://www.westfield.com.au/au/images/clusters/2013/banner/lbobo-may-2914.jpg"]) }
+      
+      it "returns an array of two Cache::Varnish instances" do
+        caches.size.should == 2
+        caches.each do |c|
+          c.should be_instance_of(Cache::Varnish)
+        end
       end
     end
   end

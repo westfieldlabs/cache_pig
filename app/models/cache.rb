@@ -31,6 +31,10 @@ class Cache
     config[:objects]
   end
 
+  def urls
+    options["urls"]
+  end
+
   def purge
     raise NotImplementedError, 'You have to subclass Cache.'
   end
@@ -43,16 +47,17 @@ class Cache
     self.class.to_s.sub(/^.*::/, '')
   end
 
-  def self.instance_for(params)
-    # TODO: should we check whitelist and use constantize?
-    case self.cache_type_for(params)
-    when 'CloudFront'
-      Cache::CloudFront.new(params)
-    when 'Varnish'
-      Cache::Varnish.new(params)
-    else
-      # raise?
+  # Given a hash of urls grouped by cache_config_name, creates an array of cache objects
+  # expects a hash like {"akamai_server_one" => ["http://url_to_purge","http://another_url_to_purge"]}
+  def self.instances_for(urls_grouped_by_cache_config_name)
+    cache_objects = []    
+    urls_grouped_by_cache_config_name.map do |cache_config_name,urls|
+      cache_config_hash = CacheConfig.all[cache_config_name]
+      cache_objects << "Cache::#{cache_config_hash['strategy'].classify}".constantize.new(
+        cache_config_hash.merge("urls" => urls)
+      )
     end
+    cache_objects
   end
 
   def self.cache_type_for(params)

@@ -1,8 +1,7 @@
 class CacheClearer
   include Sidekiq::Worker
 
-  def perform(cache_hash)
-    cache = Cache.instance_for(cache_hash.symbolize_keys)
+  def perform(cache)
     cache.purge
   end
 

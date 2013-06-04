@@ -1,13 +1,8 @@
 class CachesController < ApplicationController
 
   def create
-    @cache = Cache.instance_for(params[:cache])
-    #CacheClearer.perform_async(@cache.as_hash)
-
-    # TODO: when these classes are DRYed, the above statement should just work
-    # or, could we perhaps use this: sidekiq_options :queue => :CloudFront
-    CacheClearer.push_to_queue(@cache.basename, [@cache.as_hash])
-    render json: @cache
+    @caches = Cache.instances_for(CacheConfigMatcher.sort_urls_into_hashes(params))
+    render json: @caches.map{|cache| CacheClearer.push_to_queue(cache.basename, [cache]) }
   end
 
 end
