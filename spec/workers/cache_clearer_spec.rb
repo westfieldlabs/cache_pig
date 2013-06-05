@@ -10,7 +10,7 @@ describe CacheClearer do
     it "should use cache model's clear when performing synchronously" do
       Cache::CloudFront.stub(:new).and_return(@cache)
       @cache.should_receive(:purge)
-      CacheClearer.new.perform(@cache)
+      CacheClearer.new.perform(@cache.as_hash)
     end
 
     it 'should perform asynchronously' do

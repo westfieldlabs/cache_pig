@@ -10,10 +10,10 @@ class Cache
   end
 
   def yml_config
-    if options[:name]
-      CacheConfig.find_by_name(options[:name])
-    elsif options[:address]
-      CacheConfig.find_by_address(options[:address])
+    if options['name']
+      CacheConfig.find_by_name(options['name'])
+    elsif options['address']
+      CacheConfig.find_by_address(options['address'])
     else
       {}
     end
@@ -28,7 +28,7 @@ class Cache
   end
 
   def objects
-    config[:objects]
+    config['objects']
   end
 
   def urls
@@ -68,4 +68,18 @@ class Cache
     end
     class_name
   end
+
+protected
+
+  def split_and_purge(objects, slice_size = config['max_per_req'])
+    objects.each_slice(slice_size) do |slice|
+      # TODO: this method shouldn't know about details of cache clearer.
+      CacheClearer.client_push('class' => CacheClearer, 'queue' => basename, 'args' => [as_hash.merge({:objects => slice})])
+    end
+  end
+
+  def too_many?(target_objects)
+    target_objects.size > config['max_per_req']
+  end
+
 end

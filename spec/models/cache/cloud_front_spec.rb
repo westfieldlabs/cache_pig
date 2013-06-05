@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Cache::CloudFront do
   describe '#purge' do
     let(:cdn) { double('cdn', :post_invalidation => response, :get_invalidation => response) }
-    let(:cache) { Cache::CloudFront.new(:name => 'cloud_front_example_server_one', :strategy => 'CloudFront') }
+    let(:cache) { Cache::CloudFront.new('name' => 'cloud_front_example_server_one', 'strategy' => 'CloudFront') }
     let(:response) { double('response', :body => {'Id'=>'0', 'Status' => 'Completed'}) }
 
     before do
@@ -21,11 +21,13 @@ describe Cache::CloudFront do
       cache.purge
     end
 
+    # TODO: this depends on config file content.
     it 'should post invalidation with default objects' do
       cdn.should_receive(:post_invalidation).with('DIST_ID_1', ['/default.html'])
       cache.purge
     end
 
+    # TODO: this depends on config file content.
     context 'when objects specified' do
       it 'should post invalidation with specified objects' do
         cdn.should_receive(:post_invalidation).with('DIST_ID_1', ['obj'])
@@ -34,7 +36,7 @@ describe Cache::CloudFront do
     end
 
     it "should timeout if not completing" do
-      cache_timeout = Cache::CloudFront.new(cache.config.merge(:timeout_seconds => 1))
+      cache_timeout = Cache::CloudFront.new(cache.config.merge('timeout_seconds' => 1))
       response.stub(:body => {'Id'=>'0', 'Status' => 'InProgress'})
       expect { cache_timeout.purge }.to raise_error(Fog::Errors::TimeoutError)
     end
