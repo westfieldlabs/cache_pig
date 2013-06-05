@@ -16,16 +16,9 @@ class Cache::CloudFront < Cache
     })
   end
 
-  def split_and_purge(objects)
-    objects.each_slice(config['max_per_req']) do |slice|
-      # TODO: this method shouldn't know about details of cache clearer.
-      CacheClearer.client_push('class' => CacheClearer, 'queue' => basename, 'args' => [as_hash.merge({:objects => slice})])
-    end
-  end
-
-  def purge(target_objects = objects)
+  def purge(target_objects = config['urls'])
     if too_many?(target_objects)
-      split_and_purge(target_objects)
+      split_and_purge(target_objects, config['max_per_req'])
     else
       invalidate_and_wait(config["distribution_id"], target_objects)
     end
