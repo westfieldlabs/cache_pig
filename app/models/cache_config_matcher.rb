@@ -21,7 +21,7 @@ class CacheConfigMatcher
   end
 
   def self.urls_as_array(params)
-    (Array(params[:url])+Array(params[:urls])).map{|url| url.split(/[\s|,]/)}.flatten.compact
+    (Array(params[:url])+Array(params[:urls])).map{|url| url.split(/[\s|,]/)}.flatten.compact.map{|url| url.gsub(/\A["']|["']\Z/, '')}
   end
 
   def self.url_matches_urls_in_config_hash?(url,config_hash)
