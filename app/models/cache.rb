@@ -40,7 +40,7 @@ class Cache
   end
 
   def as_hash
-    raise NotImplementedError, 'You have to subclass Cache.'
+    { :cache_type => basename }.merge(options)
   end
 
   def basename

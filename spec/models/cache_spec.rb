@@ -69,12 +69,6 @@ describe Cache do
     end
   end
 
-  describe '#as_hash' do
-    it 'should raise not implemented' do
-      expect { Cache.new.as_hash }.to raise_error( NotImplementedError )
-    end
-  end
-
   describe '#basename' do
     it 'should be Cache' do
       expect(Cache.new.basename).to eq('Cache')

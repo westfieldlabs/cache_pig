@@ -1,5 +1,7 @@
 :queues:
   - [default]
   - [CloudFront]
+  - [Varnish]
+  - [Akamai]
 :limits:
   CloudFront: 3

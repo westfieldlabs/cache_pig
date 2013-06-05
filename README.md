@@ -1,7 +1,4 @@
-A cache invalidation and purging service that can talk to Amazon CloudFront and Akamai CCUAPI.  
-<<<<<<< HEAD
-
-It supports cache invalidation modules so it's possible to add support for other CDN and cache services.
+A cache invalidation and purging service that can talk to Amazon CloudFront, Akamai CCUAPI, Varnish, and can easily be extended to talk to other cache services.
 
 
 Required Environment / Minimum Setup
