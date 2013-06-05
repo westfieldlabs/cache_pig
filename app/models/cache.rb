@@ -40,7 +40,7 @@ class Cache
   end
 
   def as_hash
-    { :cache_type => basename }.merge(options)
+    {'options' => {'strategy' => basename}.merge(options)}
   end
 
   def basename

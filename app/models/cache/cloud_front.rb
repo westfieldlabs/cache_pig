@@ -25,7 +25,7 @@ class Cache::CloudFront < Cache
   end
 
   def as_hash
-    {'strategy' => 'CloudFront'}.merge(options)
+    {'options' => {'strategy' => 'CloudFront'}.merge(options)}
   end
 
 private
