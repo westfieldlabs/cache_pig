@@ -1,6 +1,9 @@
 # Put cache config in this file. Some examples are added below:
 akamai_example_server_one:
   strategy: Akamai
+  username: my_username
+  password: my_password
+  # you could also set max_per_req (default 100) if you want to force smaller chunks per request
   urls:
     # Using a specific url:
     - http://acme.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg
@@ -34,6 +37,8 @@ cloud_front_example_server_one:
   secret_key: 'SECRET'
   distribution_id: 'DIST_ID_1'
   timeout_seconds: 1200
+  # you could set use_path_only (deafult true) to false if you want to send the whole 'http://example.com/foo' rather than just '/foo'
+  # you could also set max_per_req (default 1000) if you want to force smaller chunks per request
   urls:
     - /au/images/
 

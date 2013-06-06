@@ -4,6 +4,7 @@ class Cache::CloudFront < Cache
     {
       'timeout_seconds' => 1200,
       'max_per_req' => 1000,
+      'use_path_only' => true,
     }
   end
 
@@ -16,6 +17,10 @@ class Cache::CloudFront < Cache
   end
 
   def purge(target_objects = config['urls'])
+    if config['use_path_only']
+      target_objects = target_objects.map { |url| path_of(url) }
+    end
+
     if too_many?(target_objects)
       split_and_purge(target_objects, config['max_per_req'])
     else
@@ -28,6 +33,13 @@ class Cache::CloudFront < Cache
   end
 
 private
+
+  def path_of(url)
+    URI.parse(url).path
+  rescue URI::InvalidURIError
+    url
+  end
+
   def invalidate_and_wait(distribution_id, objects)
     response = cdn.post_invalidation(distribution_id, objects)
     id = response.body['Id']
