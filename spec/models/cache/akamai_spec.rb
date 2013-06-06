@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Cache::Akamai do
   let(:akamai) { Cache::Akamai.new(:name => 'akamai_test') }
-  let(:response) { double('response', :code => 100) }
+  let(:response) { double('response', :code => 100, :body => '') }
 
   before do
     AkamaiApi::Ccu.stub(:purge => response)
@@ -11,7 +11,7 @@ describe Cache::Akamai do
 
   describe '#purge' do
     it 'should create connection with provided config' do
-      CacheConfig.stub(:find_by_name).and_return({:username => 'username', :password => 'password'})
+      CacheConfig.stub(:find_by_name).and_return({'username' => 'username', 'password' => 'password'})
       AkamaiApi.config.should_receive(:merge!).with(
         :auth  => [ 'username', 'password' ]
       )
@@ -23,7 +23,11 @@ describe Cache::Akamai do
       akamai.purge(['http://example.com/foo', 'http://example.com/bar'])
     end
 
-    it 'should timeout if not completing'
+    it 'should timeout if not completing' do
+      AkamaiApi::Ccu.unstub(:purge)
+      stub_request(:any, /.*/).to_timeout
+      expect { akamai.purge }.to raise_error(Timeout::Error)
+    end
 
     context 'when more than 100 objects given' do
       let(:array_201) { (1..201).map { |i| "#{i}.txt" } }
@@ -60,6 +64,19 @@ describe Cache::Akamai do
         }.to change{CacheClearer.jobs.select{|j| j["queue"] == "default"}.size}.by(1)
       end
 
+    end
+
+    context 'when some other error (eg 399) returned' do
+      before do
+        AkamaiApi::Ccu.stub(:purge).and_return(response)
+        response.stub(:code).and_return(399)
+      end
+
+      it 'should raise exception' do
+        expect {
+          akamai.purge([:foo])
+        }.to raise_error(StandardError)
+      end
     end
 
     context 'when it succeeds' do
