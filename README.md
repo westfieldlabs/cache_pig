@@ -111,3 +111,12 @@ curl -d url=something.com http://cachepigs-url
 curl -d "url='http://www.something.com'&another_param=true" http://cachepigs-url
 ```
 
+Known Issues
+----------------------------------------------
+
+Currently, due to the Akamai Api implementation, you can only use Akamai configurations with one set of username and password.
+
+Cachepig limits CloudFront requests to 1000 items per request, and 3 requests at a time as required by CloudFront. This means if there is another invalidation coming from something other than cachepig, it will still create 3 requets. Each worker waits until the job is "completed" which means each CloudFront worker will stay around for about 10 minutes after creating an invalidation request.
+
+Cachepig limits Akamai requests to 100 items per request as required. However, currently, it does not limit concurrent requests to 10000. Instead, when a request returns code 332 (indicating too many requests have been made), the worker that receives it pauses the Akamai queue and queues itself in the 'default' queue. Each successful call to akamai is followed by unpausing the Akamai queue.
+
