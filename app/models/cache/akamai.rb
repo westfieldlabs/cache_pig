@@ -23,14 +23,14 @@ class Cache::Akamai < Cache
       Sidekiq::Queue[basename].pause
       CacheClearer.client_push('class' => CacheClearer, 'queue' => 'default', 'args' => [as_hash])
     elsif error_response?(response)
-      raise "Error #{response.code} rereturned from Akamai: \n" + response.body
+      raise "Error #{response.code} rereturned from Akamai"
     else
       Sidekiq::Queue[basename].unpause
     end
   end
 
   def as_hash
-    options
+    {'options' => {'strategy' => 'Akamai'}.merge(options)}
   end
 
 private

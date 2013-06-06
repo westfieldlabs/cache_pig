@@ -2,7 +2,6 @@ class Cache::CloudFront < Cache
 
   def default_config
     {
-      'objects' => ['/default.html'],
       'timeout_seconds' => 1200,
       'max_per_req' => 1000,
     }
