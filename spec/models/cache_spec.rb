@@ -15,19 +15,19 @@ describe Cache do
 
     context 'when name given' do
       it 'should find by name' do
-        expect(Cache.new(:name => 'foo').yml_config).to eq('found by name')
+        expect(Cache.new('name' => 'foo').yml_config).to eq('found by name')
       end
     end
 
     context 'when address given' do
       it 'should find by address' do
-        expect(Cache.new(:address => 'bar').yml_config).to eq('found by address')
+        expect(Cache.new('address' => 'bar').yml_config).to eq('found by address')
       end
     end
 
     context 'when both given' do
       it 'should find by name' do
-        expect(Cache.new(:name => 'foo', :address => 'bar').yml_config).to eq('found by name')
+        expect(Cache.new('name' => 'foo', :address => 'bar').yml_config).to eq('found by name')
       end
     end
 
@@ -58,7 +58,7 @@ describe Cache do
 
   describe '#objects' do
     it "should be config's objects" do
-      cache = Cache.new(:objects => ['object'])
+      cache = Cache.new('objects' => ['object'])
       expect(cache.objects).to eq(['object'])
     end
   end
