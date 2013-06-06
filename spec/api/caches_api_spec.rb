@@ -15,12 +15,12 @@ describe CachesController, :type => :api do
 
   context "purging multiple valid urls using multiple strategies" do
 
-    let(:url) { "/caches?url='http://www.acme.com/au/images/,http://cdnsa1.atwestfield.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg'" }
+    let(:url) { "/caches?url='http://www.acme.com/au/images/,http://acme.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg'" }
 
     it "responds with a Added to X Queue message for each" do
       post url
       response.body.should eql(
-        "{\"http://www.acme.com/au/images/\":[\"Added to Cache::CloudFront queue\"],\"http://cdnsa1.atwestfield.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg\":[\"Added to Cache::CloudFront queue\",\"Added to Cache::Akamai queue\"]}"
+        "{\"http://www.acme.com/au/images/\":[\"Added to Cache::CloudFront queue\"],\"http://acme.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg\":[\"Added to Cache::CloudFront queue\",\"Added to Cache::Akamai queue\"]}"
         )
     end
 
@@ -28,15 +28,14 @@ describe CachesController, :type => :api do
 
   context "purging a single valid url that uses multiple strategies" do
 
-    let(:url) { "/caches?url='http://www.westfield.com.au/au/images/clusters/2013/banner/lbobo-may-2914.jpg'" }
+    let(:url) { "/caches?url='http://www.acme.com/au/images/clusters/2013/banner/lbobo-may-2914.jpg'" }
 
     it "responds with the Added to X Queue message and lists both strategies" do
       post url
-      response.body.should eql("{\"http://www.westfield.com.au/au/images/clusters/2013/banner/lbobo-may-2914.jpg\":[\"Added to Cache::Varnish queue\",\"Added to Cache::CloudFront queue\"]}")
+      response.body.should eql("{\"http://www.acme.com/au/images/clusters/2013/banner/lbobo-may-2914.jpg\":[\"Added to Cache::Varnish queue\",\"Added to Cache::CloudFront queue\"]}")
     end
 
   end
-
     
   context "unsuccessful requests" do
 

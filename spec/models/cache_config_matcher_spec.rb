@@ -12,29 +12,29 @@ describe CacheConfigMatcher do
       end
 
       it "returns a hash given multiple urls that are space-separated" do
-        params = {:url => "/au/images/clusters/2013/banner/image.jpeg http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
+        params = {:url => "/au/images/clusters/2013/banner/image.jpeg http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
         result = CacheConfigMatcher.sort_urls_into_hashes(params)
         result.should == {
           "cloud_front_example_server_one"=>["/au/images/clusters/2013/banner/image.jpeg"],
-          "varnish_example_server_one" => ["http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
+          "varnish_example_server_one" => ["http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
         }
       end
 
       it "returns a hash given multiple urls that are comma-separated" do
-        params = {:url => "/au/images/clusters/2013/banner/image.jpeg,http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
+        params = {:url => "/au/images/clusters/2013/banner/image.jpeg,http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
         result = CacheConfigMatcher.sort_urls_into_hashes(params)
         result.should == {
           "cloud_front_example_server_one"=>["/au/images/clusters/2013/banner/image.jpeg"],
-          "varnish_example_server_one" => ["http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
+          "varnish_example_server_one" => ["http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
         }
       end
 
       it "returns a hash given multiple urls that are comma- and space-separated" do
-        params = {:url => "/au/images/clusters/2013/banner/image.jpeg, http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
+        params = {:url => "/au/images/clusters/2013/banner/image.jpeg, http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"}
         result = CacheConfigMatcher.sort_urls_into_hashes(params)
         result.should == {
           "cloud_front_example_server_one"=>["/au/images/clusters/2013/banner/image.jpeg"],
-          "varnish_example_server_one" => ["http://www.westfield.com.au/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
+          "varnish_example_server_one" => ["http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/"]
         }
       end
 
