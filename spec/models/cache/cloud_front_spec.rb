@@ -53,9 +53,9 @@ describe Cache::CloudFront do
       it 'should make 1000, 1000, and 1 object' do
         cache.purge(array_2001)
         jobs = CacheClearer.jobs[-3..-1]
-        expect(jobs[0]['args'][0]['urls'].size).to eq(1000)
-        expect(jobs[1]['args'][0]['urls'].size).to eq(1000)
-        expect(jobs[2]['args'][0]['urls'].size).to eq(1)
+        expect(jobs[0]['args'][0]['options']['urls'].size).to eq(1000)
+        expect(jobs[1]['args'][0]['options']['urls'].size).to eq(1000)
+        expect(jobs[2]['args'][0]['options']['urls'].size).to eq(1)
       end
     end
   end
