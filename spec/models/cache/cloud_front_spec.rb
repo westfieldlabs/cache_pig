@@ -58,6 +58,22 @@ describe Cache::CloudFront do
         expect(jobs[2]['args'][0]['options']['urls'].size).to eq(1)
       end
     end
+
+    context 'when use_path_only is configured true' do
+      it 'should modify urls to not have protocol and domain' do
+        cache.options['use_path_only'] = true
+        cdn.should_receive(:post_invalidation).with(anything, ['/foo/bar', '/bar/foo', '/foo'])
+        cache.purge(['http://www.example.com/foo/bar', 'http://www.example2.com/bar/foo', '/foo'])
+      end
+    end
+
+    context 'when use_path_only is configured false' do
+      it 'should pass full urls' do
+        cache.options['use_path_only'] = false
+        cdn.should_receive(:post_invalidation).with(anything, ['http://www.example.com/foo/bar', 'http://www.example2.com/bar/foo', '/foo'])
+        cache.purge(['http://www.example.com/foo/bar', 'http://www.example2.com/bar/foo', '/foo'])
+      end
+    end
   end
 
   describe '#basename' do
