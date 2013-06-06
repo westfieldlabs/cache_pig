@@ -21,5 +21,7 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   # config.order = "random"
-
 end
+
+# Use the config file from the spec/support directory
+CacheConfig.load_caches_info(config_file='spec/support/example_cache_config.yml')

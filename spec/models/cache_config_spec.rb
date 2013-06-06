@@ -15,10 +15,10 @@ describe CacheConfig do
 
   end
 
-  context "with a caches.yml file provided" do
+  context "with a caches yml file provided" do
 
     before do
-      CacheConfig.load_caches_info
+      CacheConfig.load_caches_info('spec/support/example_cache_config.yml')
     end
 
     it "loads the provided caches.yml config file" do
@@ -26,13 +26,10 @@ describe CacheConfig do
     end
 
     it "allows reloading of config" do
-      CacheConfig.all.keys.should_not include("new_cached_content_server_name")
+      CacheConfig.all = {}
+      CacheConfig.all.should be_empty
       CacheConfig.load_caches_info('spec/support/example_cache_config.yml')
-      CacheConfig.all.keys.should include("new_cached_content_server_name")
-    end
-
-    after do
-      CacheConfig.load_caches_info
+      CacheConfig.all.keys.should include("akamai_example_server_one")
     end
 
   end
