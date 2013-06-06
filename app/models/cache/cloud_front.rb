@@ -2,7 +2,6 @@ class Cache::CloudFront < Cache
 
   def default_config
     {
-      'objects' => ['/default.html'],
       'timeout_seconds' => 1200,
       'max_per_req' => 1000,
     }
@@ -29,10 +28,6 @@ class Cache::CloudFront < Cache
   end
 
 private
-  def too_many?(objects)
-    objects.size > config['max_per_req']
-  end
-
   def invalidate_and_wait(distribution_id, objects)
     response = cdn.post_invalidation(distribution_id, objects)
     id = response.body['Id']

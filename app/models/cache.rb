@@ -74,7 +74,7 @@ protected
   def split_and_purge(objects, slice_size = config['max_per_req'])
     objects.each_slice(slice_size) do |slice|
       # TODO: this method shouldn't know about details of cache clearer.
-      CacheClearer.client_push('class' => CacheClearer, 'queue' => basename, 'args' => [as_hash.merge({'urls' => slice})])
+      CacheClearer.client_push('class' => CacheClearer, 'queue' => basename, 'args' => [{'options' => as_hash['options'].merge({'urls' => slice})}])
     end
   end
 
