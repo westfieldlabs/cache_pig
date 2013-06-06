@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Cache::Akamai do
-  let(:akamai) { Cache::Akamai.new(:name => 'akamai_test') }
+  let(:akamai) { Cache::Akamai.new('name' => 'akamai_test') }
   let(:response) { double('response', :code => 100, :body => '') }
 
   before do
@@ -41,9 +41,9 @@ describe Cache::Akamai do
       it 'should split in 100, 100, 1' do
         akamai.purge(array_201)
         jobs = CacheClearer.jobs[-3..-1]
-        expect(jobs[0]['args'][0]['objects'].size).to eq(100)
-        expect(jobs[1]['args'][0]['objects'].size).to eq(100)
-        expect(jobs[2]['args'][0]['objects'].size).to eq(1)
+        expect(jobs[0]['args'][0]['urls'].size).to eq(100)
+        expect(jobs[1]['args'][0]['urls'].size).to eq(100)
+        expect(jobs[2]['args'][0]['urls'].size).to eq(1)
       end
     end
 

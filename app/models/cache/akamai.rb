@@ -1,9 +1,8 @@
 class Cache::Akamai < Cache
   def default_config
     {
-      :wsdl_endpoint => 'https://ccuapi.akamai.com/soap/servlet/soap/purge',
-      :max_per_req => 100,
-      :purge_method => 'invalidate', # or 'remove'
+      'max_per_req' => 100,
+      'purge_method' => 'invalidate', # or 'remove'
     }
   end
 
@@ -18,7 +17,7 @@ class Cache::Akamai < Cache
   def issue_purge(target_objects)
     # TODO: this should not be merged every time
     AkamaiApi.config.merge! :auth => [config['username'], config['password']]
-    response = AkamaiApi::Ccu.purge config[:purge_method].to_sym, :arl, target_objects
+    response = AkamaiApi::Ccu.purge config['purge_method'].to_sym, :arl, target_objects
     if too_many_current_invalidations?(response)
       # pause this queue, add this job itself to default queue
       Sidekiq::Queue[basename].pause
