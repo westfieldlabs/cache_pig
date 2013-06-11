@@ -2,14 +2,14 @@ class CachesController < ApplicationController
 
   def create
     # for each url in the params, find which cache strategies it is applicable to
-    @caches = Cache.instances_for(CacheConfigMatcher.sort_urls_into_hashes(params))
+    @caches = Cache.instances_for(CacheConfigMatcher.sort_urls_into_hashes(params),params)
 
     # Constructing response
     resp = {}
     CacheConfigMatcher.urls_as_array(params).map{|u| resp[u] = nil}
 
     # Add cache objects to queues
-    @caches.each do |cache| 
+    @caches.each do |cache|
       queued = CacheClearer.push_to_queue(cache.basename, [cache])
       cache.urls.each do |c|
         resp[c]||=[]

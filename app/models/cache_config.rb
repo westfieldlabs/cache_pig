@@ -1,13 +1,6 @@
 class CacheConfig
 
   cattr_accessor :all
-
-  def self.all
-    if @@all.nil?
-      self.load_caches_info
-    end
-    @@all
-  end
   
   def self.load_caches_info(config_file='config/caches.yml')
     if File.exists?(config_file)

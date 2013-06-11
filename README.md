@@ -96,6 +96,12 @@ cache_strategy_name:
     - /something.com/.*.jpg/
 ```
 Any other config that is needed in the purge method can be added to the hash, to keep it DRY config can be added to a 'default_config' class method in the cache class (cachepig will check for the presence of this method, and given a hash will merge those options into the config).
+To override config in the config file and the default_config, send it as the cache[x] param, for example:
+```
+curl -d url=http://www.something.com&cache[api_key]=somethingsecret http://cachepigs-url
+```
+This will result in {"api_key" => "somethingsecret"} appearing in the config hash, and means that config doesn't necessarily have to live in this app - it can be sent through when issuing the purge request.
+
 Urls starting and ending with '/' are converted to regular expressions when matching the url params. They don't necessarily need to be urls, as long as the url params sent to cachepig match it and the caching strategy class has the necessary info to send the purge request, a string like 'cloudfront_purge_1' would also work.
 
 Multiple urls can be sent in the request to cachepig. They can be comma or space delimited, and both the 'url' and 'urls' parametres will be used, otherwise they behave as expected, so characters like '&' need to be in a quoted string so that they aren't interpreted as the beginning of a different param.

@@ -49,12 +49,12 @@ class Cache
 
   # Given a hash of urls grouped by cache_config_name, creates an array of cache objects
   # expects a hash like {"akamai_server_one" => ["http://url_to_purge","http://another_url_to_purge"]}
-  def self.instances_for(urls_grouped_by_cache_config_name)
+  def self.instances_for(urls_grouped_by_cache_config_name,params={})
     cache_objects = []    
     urls_grouped_by_cache_config_name.map do |cache_config_name,urls|
       cache_config_hash = CacheConfig.all[cache_config_name]
       cache_objects << "Cache::#{cache_config_hash['strategy'].classify}".constantize.new(
-        cache_config_hash.merge("urls" => urls)
+        cache_config_hash.merge(params[:cache] || {}).merge("urls" => urls)
       )
     end
     cache_objects

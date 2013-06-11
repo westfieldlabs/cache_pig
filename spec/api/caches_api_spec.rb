@@ -73,6 +73,25 @@ describe CachesController, :type => :api do
 
     end
 
+  end
+
+  context "overriding config from the YAML" do
+
+    let(:url) { "/caches?url='http://www.acme.com/au/images/'&cache[secret_key]=ABC123" }
+    let!(:cache) { Cache::CloudFront.new("urls"=>["http://www.acme.com/au/images/"]) } 
+
+    it "should replace values in the config hash with params" do
+      Cache::CloudFront.should_receive(:new).with({
+        "strategy"=>"CloudFront", 
+        "access_key"=>"123", 
+        "secret_key"=>"ABC123", 
+        "distribution_id"=>"DIST_ID_1", 
+        "timeout_seconds"=>1200, 
+        "urls"=>["http://www.acme.com/au/images/"]
+        }).and_return(cache)
+
+      post url
+    end
 
   end
 end

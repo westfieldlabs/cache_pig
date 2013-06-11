@@ -2,11 +2,7 @@ class CacheClearer
   include Sidekiq::Worker
 
   def perform(cache)
-    if cache.is_a?(Hash)
-      "Cache::#{cache["options"]["strategy"]}".constantize.new(cache["options"]).purge
-    else
-      cache.purge
-    end
+    "Cache::#{cache["options"]["strategy"]}".constantize.new(cache["options"]).purge
   end
 
   def self.push_to_queue(queue, data)

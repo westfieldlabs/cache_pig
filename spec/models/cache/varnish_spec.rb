@@ -22,6 +22,26 @@ describe Cache::Varnish do
 
   end
 
+  describe "with no proxies specified" do
+
+    let(:cache) { Cache::Varnish.new('name' => 'varnish_example_server_one') }
+
+    it "should send the purge request straight to the urls" do
+      cache.stub(:config).and_return({
+        "proxies" => nil,
+        "urls" => ["http://www.acme.com/au/images/clusters/2013/banner/lbobo-may-2914.jpg"]})
+      RestClient.should_receive(:get).once do |url, options|
+        cache.config["urls"].should include(url)
+        options.should == {
+          :cache_control=>"no-cache", 
+          :timeout => 2
+        }
+      end
+      cache.purge
+    end
+
+  end
+
   describe '#basename' do
     it 'should be Varnish' do
       expect(Cache::Varnish.new.basename).to eq('Varnish')

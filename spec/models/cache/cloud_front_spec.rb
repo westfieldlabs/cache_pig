@@ -35,6 +35,15 @@ describe Cache::CloudFront do
       end
     end
 
+    context 'when invalid objects specified' do
+      it "should raise an error" do
+        expect{
+            cache.purge(["eval(`ls \ `)"])
+          }.to raise_error(URI::InvalidURIError)
+
+      end
+    end
+
     it "should timeout if not completing" do
       cache_timeout = Cache::CloudFront.new(cache.config.merge('timeout_seconds' => 1))
       response.stub(:body => {'Id'=>'0', 'Status' => 'InProgress'})
