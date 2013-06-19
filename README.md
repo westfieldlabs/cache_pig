@@ -5,7 +5,7 @@ It uses a yaml file to store the custom config (eg API keys), the cache strategy
 The goal is to be able to post minimal info to the api and cachepig will know how to handle it.
 A simple example:
 ```
-curl -d url=http://www.something.com/index.html http://cachepigs-url
+curl -d url=http://www.something.com/index.html http://cachepigs-url/caches
 ```
 Then in the config file:
 ```
