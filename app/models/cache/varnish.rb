@@ -22,6 +22,7 @@ class Cache::Varnish < Cache
   end
 
   def send_purge_request(url, headers, proxy = nil)
+    Rails.logger.debug "DEBUG Varnish Invalidation url=#{url} headers=#{headers.inspect} proxy=#{proxy.inspect}"
     begin
       response = RestClient.get url, headers
       ["#{url}#{proxy ? ' (via '+proxy+')' : ''})", response]
