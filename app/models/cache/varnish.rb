@@ -22,12 +22,19 @@ class Cache::Varnish < Cache
   end
 
   def send_purge_request(url, headers, proxy = nil)
-    Rails.logger.debug "DEBUG Varnish Invalidation url=#{url} headers=#{headers.inspect} proxy=#{proxy.inspect}"
+    Rails.logger.debug "DEBUG Varnish Invalidation url=#{url} headers=#{headers.inspect} proxy=#{proxy.inspect} method=#{config["request_method"]}"
     begin
-      response = RestClient.get url, headers
+      if config["request_method"] == "head"
+        response = RestClient.head url, headers
+      else
+        if config["request_method"]
+          Rails.logger.warn "Ignoring invalid request_headers from configuration value=#{config["request_method"]}"
+        end
+        response = RestClient.get url, headers
+      end
       ["#{url}#{proxy ? ' (via '+proxy+')' : ''})", response]
-    rescue RestClient::RequestTimeout
-      raise
+    rescue RestClient::RequestTimeout, RestClient::ResourceNotFound => e
+      Rails.logger.warn "Varnish status=404 url=#{url} message=#{e.message}"
     end
   end
 
