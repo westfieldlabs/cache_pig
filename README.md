@@ -1,3 +1,25 @@
+
+License
+---------------------------------------------
+   Copyright 2013 Westfield Digital Pty Ltd
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   
+
+
+Introduction
+---------------------------------------------
+
 A cache invalidation rails-api application that can talk to Amazon CloudFront, Akamai CCUAPI, Varnish, and is easy to extend to work with other cache services. If you have multiple applications using multiple caching strategies, this application can help extract the complexity of purging the caches.
 
 It uses a yaml file to store the custom config (eg API keys), the cache strategy classes (eg Cache::Akamai, Cache::CloudFront, Cache::Varnish) to handle the differences between the cache strategies, and redis queues (via sidekiq) to handle the outbound purge requests.
