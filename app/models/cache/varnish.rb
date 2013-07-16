@@ -49,6 +49,7 @@ class Cache::Varnish < Cache
       ["#{url}#{proxy ? ' (via '+proxy+')' : ''})", response]
     rescue RestClient::RequestTimeout, RestClient::ResourceNotFound => e
       Rails.logger.warn "Varnish status=404 url=#{url} message=#{e.message}"
+      raise e
     end
   end
 

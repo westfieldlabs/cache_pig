@@ -59,6 +59,7 @@ private
       Rails.logger.debug "DEBUG CloudFront Invalidation error"
       Rails.logger.debug e.backtrace
       Rails.logger.warn "WARN CloudFront Invalidation error #{e.message}"
+      raise e
     end
   end
 
