@@ -1,22 +1,3 @@
-
-License
----------------------------------------------
-   Copyright 2013 Westfield Digital Pty Ltd
- 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
- 
-       http://www.apache.org/licenses/LICENSE-2.0
- 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-   
-
-
 Introduction
 ---------------------------------------------
 
@@ -147,4 +128,22 @@ Currently, due to the Akamai Api implementation, you can only use Akamai configu
 Cachepig limits CloudFront requests to 1000 items per request, and 3 requests at a time as required by CloudFront. This means if there is another invalidation coming from something other than cachepig, it will still create 3 requets. Each worker waits until the job is "completed" which means each CloudFront worker will stay around for about 10 minutes after creating an invalidation request.
 
 Cachepig limits Akamai requests to 100 items per request as required. However, currently, it does not limit concurrent requests to 10000. Instead, when a request returns code 332 (indicating too many requests have been made), the worker that receives it pauses the Akamai queue and queues itself in the 'default' queue. Each successful call to akamai is followed by unpausing the Akamai queue.
+
+
+License
+---------------------------------------------
+   Copyright 2013 Westfield Digital Pty Ltd
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   
 
