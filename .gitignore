@@ -4,3 +4,4 @@
 .rvmrc
 log/*
 tmp/*
+coverage/*

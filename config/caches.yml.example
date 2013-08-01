@@ -1,64 +1,65 @@
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-# 
-#       http://www.apache.org/licenses/LICENSE-2.0
-# 
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+varnish_instance1:
+  strategy: Varnish
+  proxies:
+    - http://varnish1.example.com:80
+    - http://varnish2.example.com:80
+  request_method: head
+  urls:
+    - /cdnsa[1-4]\.cdndomain1.com\.com/
+    - /cdn[1-4]\.cdndomain1.com\.com/
+    - /(www|uk)\.example1\.com/
+    - /static\.example1\.com/
+    - /www\.example1\.com\.au/
+    - /www\.example1\.co\.nz/
+    - /sa[1-4]\.cdndomain2\.io/
+    - /sa[1-4]\.cdndomain3\.io/
+    - /cs[1-4]\.cdndomain2\.io/
+    - /cs[1-4]\.cdndomain3\.io/
+    - /(www\.)?example2\.com\.au/
 
-# Put cache config in this file. Some examples are added below:
-akamai_example_server_one:
+akamai:
   strategy: Akamai
-  username: my_username
-  password: my_password
-  # you could also set max_per_req (default 100) if you want to force smaller chunks per request
+  username: myusername
+  password: mypassword
   urls:
-    # Using a specific url:
-    - http://acme.com/au/images/clusters/2013/banner/lbobo-may-m-z-strip.jpg
-    # Using a regex to match the url:
-    - /www.acme.com.au\/au\/images\/clusters\/2013\/banner\/pete-evans-may-banner.jpg/
+    - /cdnsa[1-4]\.cdndomain1.com\.com/
+    - /cdn[1-4]\.cdndomain1.com\.com/
+    - /(www|uk)\.example1\.com/
+    - /www\.example1\.com\.au/
+    - /www\.example1\.co\.nz/
+    - /secure\.example2\.com\.au/
 
-varnish_example_server_one:
-  strategy: Varnish
-  # The purge method in Cache::Varnish will send a purge request to each of these varnish proxies:
-  proxies:
-    - abcd-rp01.int.acme.com:80
-    - abcd-rp02.int.acme.com:80
-  urls:
-    - http://www.acme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/
-    - http://cdnsa1.atacme.com/fountaingate/news-and-events/food-and-lifestyle/recipes/
-    - http://www.acme.com/au/images/clusters/2013/banner/lbobo-may-2914.jpg
-
-# Another varnish config hash, because this one needs to send the purge request to different varnish proxy servers
-varnish_example_server_two:
-  strategy: Varnish
-  proxies:
-    - abcd-rp03.int.acme.com:80
-    - abcd-rp04.int.acme.com:80
-  urls:
-    - http://www.acme.com/au/images/clusters/2013/banner/lbobo-may-2914.jpg
-
-# Couldfront uses a distribution_id to purge target objects, but cachepig still uses a url/s here to match the config
-cloud_front_example_server_one:
+cloudfront_sa:
   strategy: CloudFront
-  access_key: '123'
-  secret_key: 'SECRET'
-  distribution_id: 'DIST_ID_1'
-  timeout_seconds: 1200
-  # you could set use_path_only (deafult true) to false if you want to send the whole 'http://example.com/foo' rather than just '/foo'
-  # you could also set max_per_req (default 1000) if you want to force smaller chunks per request
+  access_key: 'SOME_ACCESS_KEY'
+  secret_key: 'some/secretfdkjhsdgjhs.sfgsfg'
+  distribution_id: 'F1X7GOLGR8M44I'
   urls:
-    - /au/images/
+    - /sa[1-4]\.cdndomain2\.io/
+    - /sa[1-4]\.cdndomain3\.io/
 
-cloud_front_example_server_two:
+cloudfront_cs:
   strategy: CloudFront
-  access_key: '123'
-  secret_key: 'SECRET'
-  distribution_id: 'DIST_ID_2'
-  timeout_seconds: 1200
+  access_key: 'SOME_ACCESS_KEY'
+  secret_key: 'some/secretfdkjhsdgjhs.sfgsfg'
+  distribution_id: 'CLOUDFRONT_1'
   urls:
-    - /au/styles/
+    - /cs[1-4]\.cdndomain2\.io/
+    - /cs[1-4]\.cdndomain3\.io/
+
+cloudfront_ir:
+  strategy: CloudFront
+  access_key: 'SOME_ACCESS_KEY'
+  secret_key: 'some/secretfdkjhsdgjhs.sfgsfg'
+  distribution_id: 'CLOUDFRONT_2'
+  urls:
+    - /ir\.cdndomain2\.io/
+
+cloudfront_example2:
+  strategy: CloudFront
+  access_key: 'SOME_ACCESS_KEY'
+  secret_key: 'some/secretfdkjhsdgjhs.sfgsfg'
+  distribution_id: 'CLOUDFRONT_3'
+  urls:
+    - /(www\.)?example2\.com\.au/
+
