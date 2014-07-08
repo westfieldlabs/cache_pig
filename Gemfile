@@ -24,6 +24,7 @@ gem 'akamai_api'
 # for sidekick admin. protect if you enable this in production. see https://github.com/mperham/sidekiq/wiki/Monitoring
 gem 'slim', ">= 1.3.0"
 gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'unicorn'
 
 group :test, :development do
   gem 'pry'
