@@ -11,6 +11,7 @@
 #   limitations under the License.
 
 source 'https://rubygems.org'
+ruby "2.1.1"
 
 gem 'rails', '3.2.13'
 gem 'rails-api'
@@ -25,6 +26,7 @@ gem 'akamai_api'
 gem 'slim', ">= 1.3.0"
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'unicorn'
+gem 'rails_12factor'
 
 group :test, :development do
   gem 'pry'
