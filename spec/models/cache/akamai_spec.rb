@@ -17,7 +17,7 @@ describe Cache::Akamai do
   let(:response) { double('response', :code => 100, :body => '') }
 
   before do
-    AkamaiApi::Ccu.stub(:purge => response)
+    AkamaiApi::CCU.stub(:purge => response)
     CacheConfig.stub(:find_by_name).and_return({})
   end
 
@@ -31,12 +31,12 @@ describe Cache::Akamai do
     end
 
     it 'should call Connection#purge with objects' do
-      AkamaiApi::Ccu.should_receive(:purge).with( :invalidate, :arl, ['http://example.com/foo', 'http://example.com/bar']).and_return(response)
+      AkamaiApi::CCU.should_receive(:purge).with( :invalidate, :arl, ['http://example.com/foo', 'http://example.com/bar']).and_return(response)
       akamai.purge(['http://example.com/foo', 'http://example.com/bar'])
     end
 
     it 'should timeout if not completing' do
-      AkamaiApi::Ccu.unstub(:purge)
+      AkamaiApi::CCU.unstub(:purge)
       stub_request(:any, /.*/).to_timeout
       expect { akamai.purge }.to raise_error(Timeout::Error)
     end
@@ -61,7 +61,7 @@ describe Cache::Akamai do
 
     context 'when Error 332 is returned' do
       before do
-        AkamaiApi::Ccu.stub(:purge).and_return(response)
+        AkamaiApi::CCU.stub(:purge).and_return(response)
         response.stub(:code).and_return(332)
       end
 
@@ -80,7 +80,7 @@ describe Cache::Akamai do
 
     context 'when some other error (eg 399) returned' do
       before do
-        AkamaiApi::Ccu.stub(:purge).and_return(response)
+        AkamaiApi::CCU.stub(:purge).and_return(response)
         response.stub(:code).and_return(399)
       end
 
